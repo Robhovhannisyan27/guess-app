@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import Input from "./components/Input";
+import Confetti from 'react-confetti'
 
 function App() {
+  const [code, setCode] = useState('')
+  const [isGameEnded, setIsGameEnded] = useState(false)
+  const { innerWidth: width, innerHeight: height } = window;
+
+  useEffect(() => {
+    if(!isGameEnded) {
+      setCode(generateCode())
+    }
+  }, [isGameEnded])
+
+  const generateCode = () => {
+    let code = Math.floor(Math.random() * 9000);
+    return `0${code}`.slice(-4)
+  }
+
+  const handleRestart = () => {
+    setIsGameEnded(false)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {isGameEnded && <p className="title">Congratulations !!</p>}
+      <Input code={code} endGame={setIsGameEnded} isGameEnded={isGameEnded} />
+      {isGameEnded &&
+        <>
+          <Confetti
+            width={width}
+            height={height}
+          />
+          <div className="button_container">
+            <button onClick={handleRestart}>Reset</button>
+          </div>
+        </>
+      }
     </div>
   );
 }
